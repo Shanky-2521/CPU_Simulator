@@ -1,21 +1,43 @@
 # CPU Simulator Design Assignment
 
-## Team Members
-1. **Shashank Cuppala**
-   - Student ID: 017415216
-   - Role: Primary Developer
+### **Team Members and Contributions**
 
-2. **Venkat Gowtham Bhupalam**
-   - Student ID: 017510714
-   - Role: Co-Developer
+- **Shashank Cuppala**
+  - Student ID: 017415216
+  - **Primary Contributions:**
+    - Project Architecture Design
+    - Core CPU Module Implementation
+    - Memory Management System
+    - ALU (Arithmetic Logic Unit) Development
+    - Instruction Set Architecture
+    - Debugging and Optimization
+    - Project Documentation and README
+    - Build System Configuration
+    - Git Repository Management
 
-3. **Pavan Charith DevaraPalli**
-   - Student ID: 017476212
-   - Role: Co-Developer
+- **Venkat Gowtham Bhupalam**
+  - Student ID: 017510714
+  - Contributions:
+    - Instruction Decoding Support
+    - Initial Assembler Prototype
+    - Error Handling Mechanisms
+    - Testing of Basic Operations
 
-4. **Sai Mouna Bogireddy**
-   - Student ID: 016587791
-   - Role: Co-Developer
+- **Pavan Charith DevaraPalli**
+  - Student ID: 017476212
+  - Contributions:
+    - Bitwise Operation Implementation
+    - Memory Segmentation Research
+    - Performance Profiling
+    - Documentation Review
+
+- **Sai Mouna Bogireddy**
+  - Student ID: 016587791
+  - Contributions:
+    - Control Flow Instruction Design
+    - Register Management Support
+    - Code Refactoring
+    - Testing Scenarios Development
 
 ## Project Overview
 This project implements a comprehensive CPU simulator with a custom Instruction Set Architecture (ISA), demonstrating key computer architecture concepts.
