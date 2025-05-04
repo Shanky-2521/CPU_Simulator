@@ -1,0 +1,23 @@
+# Compiled files
+*.o
+*.exe
+*.out
+
+# Build directories
+build/
+bin/
+
+# IDE specific files
+.vscode/
+.idea/
+
+# macOS specific files
+.DS_Store
+
+# Backup files
+*.bak
+*~
+
+# Dependency directories
+vendor/
+node_modules/
