@@ -1,19 +1,53 @@
-### **Team Members**
-- **Shashank Cuppala**
+# CPU Simulator Project
+
+## Project Overview
+A comprehensive CPU simulator implemented in C, demonstrating core computer architecture principles and providing a deep dive into low-level system design.
+
+## Team Members
+
+### Core Development Team
+- **Shashank Cuppala** (Lead Developer)
   - Student ID: 017415216
-  - Role: Developer
+  - Primary Responsibilities:
+    - Project Architecture Design
+    - Core CPU Module Implementation
+    - Memory Management System
+    - ALU Development
+    - Build System Configuration
 
-- **Venkat Gowtham Bhupalam**
+- **Venkat Gowtham Bhupalam** (Co-Developer)
   - Student ID: 017510714
-  - Role: Co-Developer
+  - Key Contributions:
+    - Instruction Decoding
+    - Assembler Prototype
+    - Error Handling Mechanisms
 
-- **Pavan Charith DevaraPalli**
-  - Student ID: TBD
-  - Role: Co-Developer
+- **Pavan Charith DevaraPalli** (Developer)
+  - Student ID: 017476212
+  - Focus Areas:
+    - Bitwise Operations
+    - Performance Optimization
+    - Documentation
 
-- **Sai Mouna Bogireddy**
-  - Student ID: TBD
-  - Role: Co-Developer
+- **Sai Mouna Bogireddy** (Developer)
+  - Student ID: 016587791
+  - Contributions:
+    - Control Flow Design
+    - Testing Frameworks
+    - Code Quality Assurance
+
+## Key Features
+- Custom Instruction Set Architecture (ISA)
+- Modular CPU Design
+- Comprehensive Memory Management
+- Arithmetic Logic Unit (ALU) Implementation
+- Instruction Decoding and Execution Simulation
+
+## Technologies
+- Programming Language: C
+- Build System: GNU Make
+- Development Tools: GCC, Git
+- Architecture: Custom 32-bit Simulator
 
 ### **1. Folder and File Structure Setup**
 - We created the folder structure for a modular CPU simulator project:
