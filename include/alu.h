@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include "cpu.h" // Include CPU structure for flag updates
 
 // ALU Function Prototypes

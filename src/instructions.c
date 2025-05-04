@@ -1,8 +1,9 @@
 #include "instructions.h"
+#include "alu.h"
 #include <stdio.h>
 
 // Decode a 32-bit binary instruction into an Instruction struct
-Instruction decode_instruction(uint32_t raw) {
+static Instruction decode_instruction(uint32_t raw) {
     Instruction instr;
     instr.opcode = (Opcode)((raw >> 24) & 0xFF); // Extract opcode (upper 8 bits)
     instr.operands[0] = (raw >> 16) & 0xFF;      // Extract first operand (next 8 bits)
@@ -12,7 +13,7 @@ Instruction decode_instruction(uint32_t raw) {
 }
 
 // Display the decoded instruction for debugging
-void display_instruction(Instruction instruction) {
+static void display_instruction(Instruction instruction) {
     printf("Opcode: %02X\n", instruction.opcode);
     printf("Operands: %u, %u, %u\n",
            instruction.operands[0],
@@ -21,14 +22,14 @@ void display_instruction(Instruction instruction) {
 }
 
 // Execute a given instruction on the CPU
-void execute_instruction(CPU *cpu, Instruction instruction) {
+static void execute_instruction(CPU *cpu, Instruction instruction) {
     printf("Executing instruction: Opcode=%02X Operands=%u, %u, %u\n",
            instruction.opcode,
            instruction.operands[0],
            instruction.operands[1],
            instruction.operands[2]);
 
-    uint32_t *reg = cpu->registers; // Shortcut to registers
+    uint32_t *reg = (uint32_t *)cpu->registers; // Shortcut to registers
     uint32_t result;
 
     switch (instruction.opcode) {
@@ -37,7 +38,7 @@ void execute_instruction(CPU *cpu, Instruction instruction) {
             reg[instruction.operands[0]] = alu_add(cpu, reg[instruction.operands[1]], reg[instruction.operands[2]]);
             break;
         case SUB:
-            reg[instruction.operands[0]] = alu_sub(cpu, reg[instruction.operands[1]], reg[instruction.operands[2]]);
+            reg[instruction.operands[0]] = alu_subtract(cpu, reg[instruction.operands[1]], reg[instruction.operands[2]]);
             break;
         case MUL:
             reg[instruction.operands[0]] = alu_mul(cpu, reg[instruction.operands[1]], reg[instruction.operands[2]]);
@@ -122,34 +123,34 @@ void execute_instruction(CPU *cpu, Instruction instruction) {
 
         // Control Flow
         case JUMP:
-            cpu->pc = reg[instruction.operands[0]]; // Jump to address in register
+            cpu->program_counter = reg[instruction.operands[0]]; // Jump to address in register
             break;
         case JZ:
-            if (cpu->flags & 0x1) // Zero flag is set
-                cpu->pc = reg[instruction.operands[0]];
+            if (cpu->flags[FLAG_ZERO]) // Zero flag is set
+                cpu->program_counter = reg[instruction.operands[0]];
             break;
         case JNZ:
-            if (!(cpu->flags & 0x1)) // Zero flag is not set
-                cpu->pc = reg[instruction.operands[0]];
+            if (!cpu->flags[FLAG_ZERO]) // Zero flag is not set
+                cpu->program_counter = reg[instruction.operands[0]];
             break;
         case CALL:
-            cpu->sp -= 4; // Push current PC onto the stack
-            write_memory(cpu->memory, cpu->sp, cpu->pc);
-            cpu->pc = reg[instruction.operands[0]]; // Jump to address in register
+            cpu->stack_pointer -= 4; // Push current PC onto the stack
+            write_memory(cpu->memory, cpu->stack_pointer, cpu->program_counter);
+            cpu->program_counter = reg[instruction.operands[0]]; // Jump to address in register
             break;
         case RET:
-            cpu->pc = read_memory(cpu->memory, cpu->sp); // Pop return address from the stack
-            cpu->sp += 4;
+            cpu->program_counter = read_memory(cpu->memory, cpu->stack_pointer); // Pop return address from the stack
+            cpu->stack_pointer += 4;
             break;
 
         // Stack Operations
         case PUSH:
-            cpu->sp -= 4;
-            write_memory(cpu->memory, cpu->sp, reg[instruction.operands[0]]);
+            cpu->stack_pointer -= 4;
+            write_memory(cpu->memory, cpu->stack_pointer, reg[instruction.operands[0]]);
             break;
         case POP:
-            reg[instruction.operands[0]] = read_memory(cpu->memory, cpu->sp);
-            cpu->sp += 4;
+            reg[instruction.operands[0]] = read_memory(cpu->memory, cpu->stack_pointer);
+            cpu->stack_pointer += 4;
             break;
 
         // System Operations

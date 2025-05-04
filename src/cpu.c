@@ -4,21 +4,27 @@
 #include "cpu.h"
 #include "alu.h"
 
+// Define memory boundaries
+#define CODE_START 0x100
+#define CODE_END (MEMORY_SIZE - 1)
+#define STACK_END (MEMORY_SIZE - 1)
+#define HEAP_START 0x200
+
 // Initialize the CPU
 void init_cpu(CPU *cpu) {
     // Clear all registers
     memset(cpu->registers, 0, sizeof(cpu->registers));
 
     // Clear flags
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 16; i++) {
         cpu->flags[i] = false;
     }
 
     // Set Program Counter to start of code segment
-    cpu->program_counter = 0;
+    cpu->program_counter = CODE_START;
 
     // Set Stack Pointer to end of memory
-    cpu->stack_pointer = MEMORY_SIZE - 1;
+    cpu->stack_pointer = STACK_END;
 
     // Clear entire memory
     memset(cpu->memory, 0, MEMORY_SIZE);
@@ -45,7 +51,7 @@ void reset_cpu(CPU *cpu) {
 }
 
 // Display current CPU state
-void display_cpu_state(const CPU *cpu) {
+static void display_cpu_state(const CPU *cpu) {
     printf("\n--- CPU State ---\n");
     
     // Print Registers
@@ -71,8 +77,8 @@ void display_cpu_state(const CPU *cpu) {
 
 // Fetch next instruction
 uint32_t fetch_instruction(CPU *cpu) {
-    if (cpu->program_counter >= MEMORY_SIZE - sizeof(uint32_t)) {
-        fprintf(stderr, "Error: Program Counter out of bounds\n");
+    if (cpu->program_counter < CODE_START || cpu->program_counter > CODE_END) {
+        fprintf(stderr, "Error: Program Counter out of memory bounds at %08X.\n", cpu->program_counter);
         cpu->halted = true;
         return 0;
     }
@@ -86,17 +92,27 @@ uint32_t fetch_instruction(CPU *cpu) {
 }
 
 // Decode instruction
-Opcodes decode_instruction(uint32_t instruction) {
+static Opcodes decode_instruction(uint32_t instruction) {
     // Extract opcode (assuming first byte represents opcode)
     return (Opcodes)(instruction & 0xFF);
 }
 
 // Execute instruction
-void execute_instruction(CPU *cpu, Opcodes opcode) {
+static void execute_instruction(CPU *cpu, Opcodes opcode) {
     switch (opcode) {
         case OP_HALT:
             cpu->halted = true;
             printf("CPU Halted\n");
+            break;
+
+        case OP_ADD:
+            // Placeholder for ADD instruction
+            printf("ADD instruction\n");
+            break;
+
+        case OP_SUB:
+            // Placeholder for SUB instruction
+            printf("SUB instruction\n");
             break;
 
         // Add more instruction implementations here
@@ -123,50 +139,3 @@ void run_cpu(CPU *cpu) {
     // Display final CPU state when halted
     display_cpu_state(cpu);
 }
-    cpu->pc = CODE_START;                              // Reset PC
-    cpu->sp = STACK_END;                               // Reset SP
-    cpu->heap_pointer = HEAP_START;                   // Reset heap pointer
-    memset(cpu->memory, 0, MEMORY_SIZE);               // Clear memory
-    cpu->halted = false;                               // Ensure CPU is not halted
-}
-
-
-// Fetch an instruction from memory
-static uint32_t fetch_instruction(CPU *cpu) {
-    if (cpu->pc < CODE_START || cpu->pc > CODE_END) {
-        fprintf(stderr, "Error: PC out of memory bounds at %08X.\n", cpu->pc);
-        cpu->halted = true;
-        return 0;
-    }
-    return *((uint32_t *)&cpu->memory[cpu->pc]);
-}
-
-
-
-// Run the CPU (fetch-decode-execute loop)
-
-void run_cpu(CPU *cpu) {
-    while (!cpu->halted) {
-        printf("Current PC: %08X\n", cpu->pc); // Debug log
-
-        // Fetch instruction
-        uint32_t raw_instruction = fetch_instruction(cpu);
-
-        // Decode the instruction
-        Instruction instruction = decode_instruction(raw_instruction);
-
-        // Execute the instruction
-        execute_instruction(cpu, instruction);
-
-        // Increment PC only if the CPU is not halted
-        if (!cpu->halted) {
-            cpu->pc += sizeof(uint32_t); // Assume 4-byte instructions
-        }
-    }
-    printf("\nCPU halted at PC: %08X\n", cpu->pc);
-}
-
-
-
-
-

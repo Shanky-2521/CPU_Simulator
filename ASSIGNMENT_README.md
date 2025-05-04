@@ -3,18 +3,18 @@
 ## Team Members
 1. **Shashank Cuppala**
    - Student ID: 017415216
-   - Role: Developer
+   - Role: Primary Developer
 
 2. **Venkat Gowtham Bhupalam**
    - Student ID: 017510714
    - Role: Co-Developer
 
 3. **Pavan Charith DevaraPalli**
-   - Student ID: TBD
+   - Student ID: 017476212
    - Role: Co-Developer
 
 4. **Sai Mouna Bogireddy**
-   - Student ID: TBD
+   - Student ID: 016587791
    - Role: Co-Developer
 
 ## Project Overview

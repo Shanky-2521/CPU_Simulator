@@ -24,7 +24,7 @@ void display_memory_state(const CPU *cpu, uint32_t start, uint32_t end, char for
  * Displays the current state of the CPU.
  * @param cpu - Pointer to the CPU structure.
  */
-void display_cpu_state(const CPU *cpu);
+// Removed function declaration
 
 /**
  * Displays the decoded instruction for debugging purposes.

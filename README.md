@@ -51,6 +51,43 @@
 
 ---
 
+### **Building and Running the Simulator**
+
+#### Prerequisites
+- GCC (GNU Compiler Collection)
+- Make
+
+#### Build Steps
+1. Open a terminal and navigate to the project root directory
+2. Clean previous builds (optional):
+   ```bash
+   make clean
+   ```
+3. Compile the project:
+   ```bash
+   make
+   ```
+
+#### Running the Simulator
+After successful compilation, run the simulator:
+```bash
+./build/cpu_simulator
+```
+
+#### Expected Output
+The simulator will demonstrate:
+- CPU initialization
+- Recursive factorial calculation
+- Fetch-Decode-Execute cycle
+- Memory and register state display
+
+#### Troubleshooting
+- Ensure GCC and Make are installed
+- Verify you are in the project root directory
+- Check that all source files are present in `src/` and `include/`
+
+---
+
 #### **c. Instruction Set Architecture (ISA)**
 - Defined an `Opcode` enum in `instructions.h` for all instructions:
   ```c

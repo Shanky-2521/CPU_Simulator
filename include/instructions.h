@@ -49,19 +49,19 @@ typedef struct {
  * @param raw - The 32-bit binary instruction.
  * @return Decoded instruction.
  */
-Instruction decode_instruction(uint32_t raw);
+// Removed function declaration
 
 /**
  * Executes a given instruction on the CPU.
  * @param cpu - Pointer to the CPU structure.
  * @param instruction - Instruction to execute.
  */
-void execute_instruction(CPU *cpu, Instruction instruction);
+// Removed function declaration
 
 /**
  * Displays the decoded instruction for debugging purposes.
  * @param instruction - Instruction to display.
  */
-void display_instruction(Instruction instruction);
+// Removed function declaration
 
 #endif // INSTRUCTIONS_H

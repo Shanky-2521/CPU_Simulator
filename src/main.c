@@ -15,6 +15,13 @@ int factorial_c(int n) {
     return n * factorial_c(n - 1);
 }
 
+// Function prototypes for external functions
+int generate_factorial_assembly(const char *source_file);
+int demonstrate_fetch_decode_execute(CPU *cpu);
+// Function signatures match assembler.h
+void execute_program(CPU *cpu);
+void load_program_to_memory(CPU *cpu, const char *object_file);
+
 int main() {
     // Create a new CPU instance
     CPU cpu;
@@ -51,45 +58,4 @@ int main() {
     execute_program(&cpu);
 
     return EXIT_SUCCESS;
-}
-    // Step 2: Run the compiled binary
-    if (run_binary() != 0) {
-        return EXIT_FAILURE; // Stop if execution fails
-    }
-
-    // Step 3: Translate C to Assembly (Optional)
-    char asm_file[256];
-    snprintf(asm_file, sizeof(asm_file), "%s.asm", c_file);
-    if (translate_c_to_asm(c_file, asm_file) != 0) {
-        return EXIT_FAILURE; // Stop if translation fails
-    }
-
-    return EXIT_SUCCESS;
-}
-
-
-
-
-int compile_c_file(const char *c_file) {
-    printf("Compiling %s...\n", c_file);
-    char command[256];
-    snprintf(command, sizeof(command), "gcc %s -o a.out", c_file);
-    int status = system(command);
-    if (status != 0) {
-        fprintf(stderr, "Error: Compilation failed for %s\n", c_file);
-        return -1;
-    }
-    printf("Compilation successful. Binary: a.out\n");
-    return 0;
-}
-
-int run_binary() {
-    printf("Running a.out...\n");
-    int status = system("./a.out");
-    if (status != 0) {
-        fprintf(stderr, "Error: Execution of a.out failed.\n");
-        return -1;
-    }
-    printf("Execution completed.\n");
-    return 0;
 }

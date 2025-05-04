@@ -6,6 +6,10 @@
 #include <ctype.h>
 #include <stdint.h>
 
+// Define memory segment constants
+#define CODE_START 0x1000
+#define CODE_END 0x2000
+
 
 // Read a 32-bit value from memory
 uint32_t read_memory(const uint8_t *memory, uint32_t address) {

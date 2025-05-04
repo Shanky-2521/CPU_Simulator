@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 // Helper function to update CPU flags for comprehensive integer handling
 static void update_flags(CPU *cpu, int32_t result, bool overflow) {
@@ -37,7 +38,7 @@ static void update_flags(CPU *cpu, int32_t result, bool overflow) {
     }
 
     // Unsigned Flags (for 32-bit unsigned representation)
-    if (result == UINT32_MAX) {
+    if ((uint32_t)result == UINT32_MAX) {
         cpu->flags[FLAG_UNSIGNED_MAX] = true;
     }
     if (result == 0) {
@@ -58,88 +59,7 @@ int32_t alu_add(CPU *cpu, int32_t a, int32_t b) {
     return result;
 }
 
-// Subtraction Operation
-int32_t alu_subtract(CPU *cpu, int32_t a, int32_t b) {
-    int32_t result = a - b;
-    
-    // Check for signed overflow
-    bool overflow = ((a > 0 && b < 0 && result <= 0) || 
-                     (a < 0 && b > 0 && result >= 0));
-
-    update_flags(cpu, result, overflow);
-
-    return result;
-}
-
-// Multiplication Operation
-int32_t alu_multiply(CPU *cpu, int32_t a, int32_t b) {
-    int64_t result = (int64_t)a * (int64_t)b;
-    
-    // Check for overflow
-    bool overflow = (result > INT32_MAX || result < INT32_MIN);
-
-    update_flags(cpu, (int32_t)result, overflow);
-
-    return (int32_t)result;
-}
-
-// Division Operation
-int32_t alu_divide(CPU *cpu, int32_t a, int32_t b) {
-    if (b == 0) {
-        // Division by zero
-        fprintf(stderr, "Error: Division by zero\n");
-        cpu->flags[FLAG_OVERFLOW] = true;
-        return 0;
-    }
-
-    int32_t result = a / b;
-
-    update_flags(cpu, result, false);
-
-    return result;
-}
-
-// Bitwise AND
-int32_t alu_and(CPU *cpu, int32_t a, int32_t b) {
-    int32_t result = a & b;
-    update_flags(cpu, result, false);
-    return result;
-}
-
-// Bitwise OR
-int32_t alu_or(CPU *cpu, int32_t a, int32_t b) {
-    int32_t result = a | b;
-    update_flags(cpu, result, false);
-    return result;
-}
-
-// Bitwise XOR
-int32_t alu_xor(CPU *cpu, int32_t a, int32_t b) {
-    int32_t result = a ^ b;
-    update_flags(cpu, result, false);
-    return result;
-}
-
-// Bitwise NOT
-int32_t alu_not(CPU *cpu, int32_t a) {
-    int32_t result = ~a;
-    update_flags(cpu, result, false);
-    return result;
-}
-
-// Left Shift
-int32_t alu_left_shift(CPU *cpu, int32_t a, uint8_t shift) {
-    int32_t result = a << shift;
-    update_flags(cpu, result, false);
-    return result;
-}
-
-// Right Shift
-int32_t alu_right_shift(CPU *cpu, int32_t a, uint8_t shift) {
-    int32_t result = a >> shift;
-    update_flags(cpu, result, false);
-    return result;
-}
+// Subtraction, Multiplication, Division, Logical, and Shift Operations are defined above
 
 // Atomic Bit-Level Operations
 
@@ -230,20 +150,20 @@ uint32_t rotate_right(uint32_t x, uint8_t n) {
     return (x >> n) | (x << (32 - n));
 }
 
-int32_t alu_sub(CPU *cpu, int32_t a, int32_t b) {
+int32_t alu_subtract(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = a - b;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
 
     // Detect signed overflow
     if ((a > 0 && b < 0 && result < 0) || (a < 0 && b > 0 && result > 0)) {
-        cpu->flags |= 0x4; // Set Overflow flag (O)
+        cpu->flags[FLAG_OVERFLOW] = true; // Set Overflow flag
     }
     return result;
 }
 
 int32_t alu_mul(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = a * b;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result; // Overflow detection is typically not included for multiplication in simple ALUs
 }
 
@@ -254,81 +174,81 @@ int32_t alu_div(CPU *cpu, int32_t a, int32_t b) {
         return 0;
     }
     int32_t result = a / b;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 // Logical Operations
 int32_t alu_and(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = a & b;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_or(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = a | b;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_xor(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = a ^ b;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_not(CPU *cpu, int32_t a) {
     int32_t result = ~a;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 // Shift Operations
 int32_t alu_shl(CPU *cpu, int32_t a, int32_t shift) {
     int32_t result = a << shift;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_shr(CPU *cpu, int32_t a, int32_t shift) {
     int32_t result = (int32_t)((uint32_t)a >> shift); // Perform logical right shift
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 // Comparison Operations
 int32_t alu_eq(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = (a == b) ? 1 : 0;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_neq(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = (a != b) ? 1 : 0;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_gt(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = (a > b) ? 1 : 0;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_lt(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = (a < b) ? 1 : 0;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_ge(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = (a >= b) ? 1 : 0;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }
 
 int32_t alu_le(CPU *cpu, int32_t a, int32_t b) {
     int32_t result = (a <= b) ? 1 : 0;
-    update_flags(cpu, result);
+    update_flags(cpu, result, false);
     return result;
 }

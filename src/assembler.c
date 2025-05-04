@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cpu.h"
 #include "assembler.h"
+#include "cpu.h"
+#include "alu.h"
 
 // Simple Assembler Implementation
 int assemble_program(const char *source_file, const char *output_file) {
@@ -79,7 +80,7 @@ void execute_program(CPU *cpu) {
             
             case OP_SUB:
                 cpu->registers[current_instr->dest_reg] = 
-                    alu_sub(cpu, 
+                    alu_subtract(cpu, 
                             cpu->registers[current_instr->src_reg1], 
                             cpu->registers[current_instr->src_reg2]);
                 break;
@@ -160,7 +161,34 @@ void demonstrate_fetch_decode_execute(CPU *cpu) {
                         cpu->registers[current_instr->src_reg1], 
                         cpu->registers[current_instr->src_reg2]);
             break;
-        // Add more cases as needed
+        case OP_SUB:
+            printf("  Performing Subtraction\n");
+            cpu->registers[current_instr->dest_reg] = 
+                alu_subtract(cpu, 
+                        cpu->registers[current_instr->src_reg1], 
+                        cpu->registers[current_instr->src_reg2]);
+            break;
+        case OP_MUL:
+            printf("  Performing Multiplication\n");
+            cpu->registers[current_instr->dest_reg] = 
+                alu_mul(cpu, 
+                        cpu->registers[current_instr->src_reg1], 
+                        cpu->registers[current_instr->src_reg2]);
+            break;
+        case OP_DIV:
+            printf("  Performing Division\n");
+            cpu->registers[current_instr->dest_reg] = 
+                alu_div(cpu, 
+                        cpu->registers[current_instr->src_reg1], 
+                        cpu->registers[current_instr->src_reg2]);
+            break;
+        case OP_HALT:
+            printf("  Halting Execution\n");
+            cpu->halted = true;
+            break;
+        default:
+            printf("  Unhandled Opcode: %d\n", current_instr->opcode);
+            break;
     }
     
     // Memory/Register State

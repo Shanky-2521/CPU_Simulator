@@ -9,9 +9,8 @@ void display_registers(const CPU *cpu) {
     for (int i = 0; i < 4; i++) {
         printf("R%d: %08X\n", i, cpu->registers[i]);
     }
-    printf("PC: %08X\n", cpu->pc);
-    printf("SP: %08X\n", cpu->sp);
-    printf("Heap Pointer: %08X\n", cpu->heap_pointer);
+    printf("PC: %08X\n", cpu->program_counter);
+    printf("SP: %08X\n", cpu->stack_pointer);
 }
 
 // Display the current state of memory in a specified range
@@ -36,14 +35,14 @@ void display_memory_state(const CPU *cpu, uint32_t start, uint32_t end, char for
 
 
 // Display the current state of the CPU
-void display_cpu_state(const CPU *cpu) {
+static void display_cpu_state(const CPU *cpu) {
     printf("\n=== CPU State ===\n");
     display_registers(cpu);
 
     printf("\nFlags: ");
-    printf("Z=%d ", (cpu->flags & 0x1) != 0); // Zero flag
-    printf("N=%d ", (cpu->flags & 0x2) != 0); // Negative flag
-    printf("O=%d\n", (cpu->flags & 0x4) != 0); // Overflow flag
+    printf("Z=%d ", cpu->flags[FLAG_ZERO]); // Zero flag
+    printf("N=%d ", cpu->flags[FLAG_NEGATIVE]); // Negative flag
+    printf("O=%d\n", cpu->flags[FLAG_OVERFLOW]); // Overflow flag
 
     printf("Halted: %s\n", cpu->halted ? "Yes" : "No");
 }
